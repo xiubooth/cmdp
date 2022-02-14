@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-__all__ = ['Distribution', 'ConstantDistribution', 'ParticleDistribution']
+__all__ = ['Distribution', 'ConstantDistribution', 'ParticleDistribution', 'UniformDistribution']
 
 
 class Distribution:
@@ -46,6 +46,27 @@ class ConstantDistribution(Distribution):
             self.constant = data['constant_vector']
         except KeyError:
             print("Error: reset constant failed as key 'constant_vector' not found in data!")
+            raise
+
+
+class UniformDistribution(Distribution):
+    """Returns a uniformly sampled vector between the upper and lower bounds"""
+
+    def __init__(self, dim: int = 1, lower_bound_vector: np.ndarray = None, upper_bound_vector: np.ndarray = None):
+        super().__init__(dim)
+        self.lower_bound_vector = np.zeros((dim,)).flatten() if lower_bound_vector is None else lower_bound_vector
+        self.upper_bound_vector = np.zeros((dim,)).flatten() if upper_bound_vector is None else upper_bound_vector
+        assert lower_bound_vector.shape == upper_bound_vector.shape
+
+    def sample(self):
+        return np.random.uniform(self.lower_bound_vector, self.upper_bound_vector)
+
+    def update(self, data: dict = None) -> None:
+        try:
+            self.lower_bound_vector = data['lower_bound_vector']
+            self.upper_bound_vector = data['upper_bound_vector']
+        except KeyError:
+            print("Error: reset constant failed as key 'upper_bound_vector' or 'lower_bound_vector' not found in data!")
             raise
 
 
