@@ -30,7 +30,7 @@ class CliffMDP(MDP, ABC):
         self.reset()
 
     def reset(self):
-        self.x = np.array([self._mid])
+        self.x = np.array([self.left_bound + 0.01])
         self.steps = 0
         self.done = False
         return np.concatenate((self.x, self.context))
@@ -41,10 +41,10 @@ class CliffMDP(MDP, ABC):
                  - self.drift * self.x \
                  + 2 * (action - 0.5) * self.step_size
         if self.x > self.right_bound or self.x < self.left_bound:
-            r = -1
+            r = -100
             self.done = True
         else:
-            r = np.abs(self.x - self._mid) ** 2
+            r = np.abs(self.x) ** 2
         if self.steps >= self.T-1:
             self.done = True
         r = float(r)
