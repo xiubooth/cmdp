@@ -84,7 +84,7 @@ class ParticleDistribution(Distribution):
             self.particles = particles
 
     def sample(self):
-        return self.particles[np.random.randint(self.n_particles, size=1)]
+        return self.particles[np.random.randint(self.n_particles, size=1)].flatten()
 
     def update(self, data: dict = None) -> None:
         if 'p' in data:

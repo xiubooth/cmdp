@@ -3,6 +3,7 @@ from typing import Type, Dict, Any, Tuple, Union
 
 import gym
 import numpy as np
+from ray.rllib.env.apis.task_settable_env import TaskSettableEnv
 
 from utils.distributions import Distribution
 
@@ -39,7 +40,7 @@ class MDP(gym.Env, ABC):
         """Step using action like in gym"""
 
 
-class cMDP(ABC, gym.Env):
+class cMDP(ABC, TaskSettableEnv):
     """
     ### Description
     A cMDP is a contextual Markov decision process [https://arxiv.org/pdf/1502.02259.pdf].
@@ -85,6 +86,12 @@ class cMDP(ABC, gym.Env):
     def to_resample(self, flag: bool):
         """Change resample flag"""
         self.resample = flag
+
+    def get_task(self):
+        return self.context
+
+    def set_task(self, context_distribution):
+        self.context_distribution = context_distribution
 
     def update_context(self, data: Dict = None):
         """Update the context distribution of cMDP given data"""
